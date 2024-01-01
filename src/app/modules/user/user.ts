@@ -16,9 +16,9 @@ export class User {
     password: string;
 
     @Column()
-    type: number;
+    type?: number;
 
-    @Column()
+    @Column({ default: true, nullable: true })
     stUser: boolean;
 
     @Column({ nullable: true })

@@ -1,0 +1,13 @@
+{
+    "editor.tabSize": 4,
+    "diffEditor.wordWrap": "on",
+    "files.eol": "\n",
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": "explicit",
+        "source.organizeImports": "explicit"
+    },
+    "editor.quickSuggestions": {
+        "strings": true
+    },
+    "editor.rulers": [100, 120]
+}
