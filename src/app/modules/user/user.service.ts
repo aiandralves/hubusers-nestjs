@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectDataSource } from "@nestjs/typeorm";
 import { Filter } from "src/app/filters/filter.service";
-import { DataSource, Like, Repository } from "typeorm";
+import { DataSource, FindOneOptions, Like, Repository } from "typeorm";
 import { User } from "./user";
 import { UserFilter } from "./user.filter";
 
@@ -25,16 +25,20 @@ export class UserService {
         return await this._userRepository.find({ where: search });
     }
 
+    async findOneOrFail(options?: FindOneOptions<User>) {
+        try {
+            return await this._userRepository.findOneOrFail(options);
+        } catch (error) {
+            throw new NotFoundException(error.message);
+        }
+    }
+
     async get(id: number): Promise<User> {
         return await this._userRepository.findOne({ where: { id } });
     }
 
-    async findByEmail(email: string): Promise<User> {
-        return await this._userRepository.findOne({ where: { email: email } });
-    }
-
     async create(user: User) {
-        const email = await this.findByEmail(user.email);
+        const email = await this._userRepository.findOneOrFail({ where: { email: user.email } });
 
         if (email) throw new Error("E-mail informado já existe.");
 

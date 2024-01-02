@@ -10,12 +10,15 @@ import {
     Post,
     Put,
     Query,
+    UseGuards,
 } from "@nestjs/common";
+import { AuthGuard } from "@nestjs/passport";
 import { User } from "./user";
 import { UserFilter } from "./user.filter";
 import { UserService } from "./user.service";
 
 @Controller("api/v1/users")
+@UseGuards(AuthGuard("jwt"))
 export class UserController {
     constructor(private readonly _userService: UserService) {}
 
