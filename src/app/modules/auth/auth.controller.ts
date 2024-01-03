@@ -1,10 +1,11 @@
-import { Controller, Post, Req, UseGuards } from "@nestjs/common";
+import { Body, Controller, HttpCode, HttpStatus, Post, Req, UseGuards } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
-import { User } from "../user/user";
 import { AuthService } from "./auth.service";
+import { IJwtPayload } from "./interfaces/jwt-payload.interface";
+import { RefreshTokenDTO } from "./refresh-token.dto";
 
 interface AuthRequest extends Request {
-    user: User;
+    user: IJwtPayload;
 }
 
 @Controller("api/v1/auth")
@@ -13,7 +14,13 @@ export class AuthController {
 
     @UseGuards(AuthGuard("local"))
     @Post("login")
-    async login(@Req() req: AuthRequest) {
-        return await this._authService.login(req.user);
+    @HttpCode(HttpStatus.OK)
+    login(@Req() req: AuthRequest) {
+        return this._authService.login(req.user);
+    }
+
+    @Post("refresh-token")
+    async refreshToken(@Body() body: RefreshTokenDTO) {
+        return await this._authService.refreshToken(body.refreshToken);
     }
 }

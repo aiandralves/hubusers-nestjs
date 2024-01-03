@@ -3,6 +3,7 @@ import { InjectDataSource } from "@nestjs/typeorm";
 import { Filter } from "src/app/filters/filter.service";
 import { DataSource, FindOneOptions, Like, Repository } from "typeorm";
 import { User } from "./user";
+import { CreateUserDTO, UpdateUserDTO } from "./user.dto";
 import { UserFilter } from "./user.filter";
 
 @Injectable()
@@ -37,15 +38,15 @@ export class UserService {
         return await this._userRepository.findOne({ where: { id } });
     }
 
-    async create(user: User) {
-        const email = await this._userRepository.findOneOrFail({ where: { email: user.email } });
+    async create(user: CreateUserDTO) {
+        const email = await this._userRepository.findOne({ where: { email: user.email } });
 
         if (email) throw new Error("E-mail informado já existe.");
 
         return await this._userRepository.save(this._userRepository.create(user));
     }
 
-    async update(id: number, data: User) {
+    async update(id: number, data: UpdateUserDTO) {
         const user = await this._userRepository.findOne({ where: { id } });
 
         if (!user) throw new NotFoundException("Usuário não encontrado.");
@@ -60,5 +61,9 @@ export class UserService {
         if (!user) throw new NotFoundException("Usuário não encontrado.");
 
         await this._userRepository.delete(id);
+    }
+
+    async updateRefreshTokenId(userId: number, refreshTokenId: string) {
+        return await this._userRepository.update(userId, { refreshTokenId });
     }
 }

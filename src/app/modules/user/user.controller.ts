@@ -1,5 +1,6 @@
 import {
     Body,
+    ClassSerializerInterceptor,
     Controller,
     Delete,
     Get,
@@ -7,13 +8,15 @@ import {
     HttpStatus,
     NotFoundException,
     Param,
+    ParseIntPipe,
     Post,
     Put,
     Query,
     UseGuards,
+    UseInterceptors,
 } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
-import { User } from "./user";
+import { CreateUserDTO, UpdateUserDTO } from "./user.dto";
 import { UserFilter } from "./user.filter";
 import { UserService } from "./user.service";
 
@@ -23,24 +26,27 @@ export class UserController {
     constructor(private readonly _userService: UserService) {}
 
     @Get()
+    @UseInterceptors(ClassSerializerInterceptor)
     async find(@Query() filters?: UserFilter) {
         return await this._userService.find(filters);
     }
 
     @Get(":id")
-    async get(@Param("id") id: number) {
+    @UseInterceptors(ClassSerializerInterceptor)
+    async get(@Param("id", new ParseIntPipe()) id: number) {
         return await this._userService.get(id);
     }
 
     @Post()
-    async create(@Body() user: User) {
+    async create(@Body() user: CreateUserDTO) {
         return this._userService.create(user).catch((e) => {
             throw new NotFoundException(e.message);
         });
     }
 
     @Put(":id")
-    async update(@Param("id") id: number, @Body() user: User) {
+    @UseInterceptors(ClassSerializerInterceptor)
+    async update(@Param("id", new ParseIntPipe()) id: number, @Body() user: UpdateUserDTO) {
         return this._userService.update(id, user).catch((e) => {
             throw new NotFoundException(e.message);
         });
@@ -48,7 +54,7 @@ export class UserController {
 
     @Delete(":id")
     @HttpCode(HttpStatus.NO_CONTENT)
-    async delete(@Param("id") id: number) {
+    async delete(@Param("id", new ParseIntPipe()) id: number) {
         return this._userService.delete(id).catch((e) => {
             throw new NotFoundException(e.message);
         });
