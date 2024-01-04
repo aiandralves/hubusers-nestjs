@@ -18,7 +18,7 @@ dotenv.config();
         UserModule,
         JwtModule.register({
             privateKey: envConfig().security.jwt.secret,
-            signOptions: { expiresIn: envConfig().security.jwt.expiration },
+            signOptions: { expiresIn: "1h" },
         }),
     ],
     controllers: [AuthController],
