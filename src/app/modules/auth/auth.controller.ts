@@ -1,10 +1,10 @@
 import { Controller, Post, Req, UseGuards } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
-import { User } from "../user/user";
 import { AuthService } from "./auth.service";
+import { IJwtPaylod } from "./interfaces/jwt-payload.interface";
 
 interface AuthRequest extends Request {
-    user: User;
+    user: IJwtPaylod;
 }
 
 @Controller("api/v1/auth")
