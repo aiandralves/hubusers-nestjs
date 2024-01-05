@@ -1,4 +1,4 @@
-import { Controller, Post, Req, UseGuards } from "@nestjs/common";
+import { Controller, Post, Req, UnauthorizedException, UseGuards } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 import { AuthService } from "./auth.service";
 import { IJwtPaylod } from "./interfaces/jwt-payload.interface";
@@ -14,6 +14,8 @@ export class AuthController {
     @UseGuards(AuthGuard("local"))
     @Post("login")
     async login(@Req() req: AuthRequest) {
-        return await this._authService.login(req.user);
+        return await this._authService.login(req.user).catch((e) => {
+            throw new UnauthorizedException(e);
+        });
     }
 }

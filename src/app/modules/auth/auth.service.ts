@@ -3,15 +3,20 @@ import { JwtService } from "@nestjs/jwt";
 import { compareSync } from "bcrypt";
 import { User } from "../user/user";
 import { UserService } from "../user/user.service";
+import { AuthResponseDTO } from "./auth-response.dto";
 import { IJwtPaylod } from "./interfaces/jwt-payload.interface";
 
 @Injectable()
 export class AuthService {
     constructor(private _userService: UserService, private _jwtService: JwtService) {}
 
-    async login(payload: IJwtPaylod) {
+    async login(payload: IJwtPaylod): Promise<AuthResponseDTO> {
         return {
             token: this._jwtService.sign(payload),
+            user: {
+                name: payload.name,
+                email: payload.email,
+            },
         };
     }
 
