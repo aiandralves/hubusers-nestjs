@@ -26,6 +26,9 @@ export class User {
     @Column({ nullable: true })
     phone?: string;
 
+    @Column({ nullable: true })
+    avatar?: string;
+
     @Column({ type: "text", nullable: true })
     bio?: string;
 
