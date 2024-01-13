@@ -35,11 +35,18 @@ export class UserService {
     }
 
     async get(id: number): Promise<User> {
-        return await this._userRepository.findOne({ where: { id } });
+        const user = await this._userRepository.findOne({ where: { id } });
+        if (!user) throw new NotFoundException("Usuário não encontrado.");
+        return user;
+    }
+
+    async getImage(id: number): Promise<string | null> {
+        const user = await this.get(id);
+        return user?.avatar || null;
     }
 
     async create(user: CreateUserDTO) {
-        const email = await this._userRepository.findOneOrFail({ where: { email: user.email } });
+        const email = await this._userRepository.findOne({ where: { email: user.email } });
 
         if (email) throw new Error("E-mail informado já existe.");
 

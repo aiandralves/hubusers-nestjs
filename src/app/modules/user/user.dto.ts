@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, IsOptional, IsUrl, Matches } from "class-validator";
+import { IsEmail, IsNotEmpty, IsOptional, Matches } from "class-validator";
 import { MessageHelper } from "src/helpers/message.helper";
 import { RegexHelper } from "src/helpers/regex.helper";
 
@@ -14,7 +14,6 @@ export class CreateUserDTO {
     phone?: string;
 
     @IsOptional()
-    @IsUrl()
     avatar?: string;
 
     @IsNotEmpty()
@@ -23,20 +22,22 @@ export class CreateUserDTO {
 }
 
 export class UpdateUserDTO {
+    @IsOptional()
+    id?: number;
+
     @IsNotEmpty()
-    name: string;
+    name?: string;
 
     @IsOptional()
     type?: number;
 
     @IsOptional()
-    stUser: boolean;
+    stUser?: boolean;
 
     @IsOptional()
     phone?: string;
 
     @IsOptional()
-    @IsUrl()
     avatar?: string;
 
     @IsOptional()

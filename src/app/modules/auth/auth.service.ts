@@ -13,6 +13,7 @@ export class AuthService {
     async login(payload: IJwtPaylod): Promise<AuthResponseDTO> {
         return {
             token: this._jwtService.sign(payload),
+            id: payload.sub,
             name: payload.name,
             email: payload.email,
         };
