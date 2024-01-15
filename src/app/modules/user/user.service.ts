@@ -1,9 +1,13 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectDataSource } from "@nestjs/typeorm";
+
 import { Filter } from "src/app/filters/filter.service";
+
+import { SupabaseHelper } from "src/helpers/supabase.helper";
 import { DataSource, FindOneOptions, Like, Repository } from "typeorm";
+import { FileDTO } from "./dtos/file.dto";
+import { CreateUserDTO, UpdateUserDTO } from "./dtos/user.dto";
 import { User } from "./user";
-import { CreateUserDTO, UpdateUserDTO } from "./user.dto";
 import { UserFilter } from "./user.filter";
 
 @Injectable()
@@ -64,5 +68,13 @@ export class UserService {
         if (!user) throw new NotFoundException("Usuário não encontrado.");
 
         await this._userRepository.delete(id);
+    }
+
+    async uploadAvatar(file: FileDTO) {
+        const supabase = SupabaseHelper;
+        const data = await supabase.storage.from("images").upload(file.originalname, file.buffer, {
+            upsert: true,
+        });
+        return data;
     }
 }

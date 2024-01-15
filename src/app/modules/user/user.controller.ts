@@ -11,12 +11,15 @@ import {
     Post,
     Put,
     Query,
+    UploadedFile,
     UseGuards,
     UseInterceptors,
 } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
+import { FileInterceptor } from "@nestjs/platform-express";
+import { FileDTO } from "./dtos/file.dto";
+import { CreateUserDTO, UpdateUserDTO } from "./dtos/user.dto";
 import { User } from "./user";
-import { CreateUserDTO, UpdateUserDTO } from "./user.dto";
 import { UserFilter } from "./user.filter";
 import { UserService } from "./user.service";
 
@@ -65,5 +68,13 @@ export class UserController {
         return this._userService.delete(id).catch((e) => {
             throw new NotFoundException(e.message);
         });
+    }
+
+    @UseGuards(AuthGuard("jwt"))
+    @Post("upload")
+    @UseInterceptors(FileInterceptor("file"))
+    async uploadFile(@UploadedFile() file: FileDTO) {
+        console.log(file);
+        return await this._userService.uploadAvatar(file);
     }
 }
