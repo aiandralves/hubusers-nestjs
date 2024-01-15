@@ -36,13 +36,10 @@ export class UserService {
 
     async get(id: number): Promise<User> {
         const user = await this._userRepository.findOne({ where: { id } });
-        if (!user) throw new NotFoundException("Usuário não encontrado.");
-        return user;
-    }
 
-    async getImage(id: number): Promise<string | null> {
-        const user = await this.get(id);
-        return user?.avatar || null;
+        if (!user) throw new NotFoundException("Usuário não encontrado.");
+
+        return user;
     }
 
     async create(user: CreateUserDTO) {
@@ -54,11 +51,10 @@ export class UserService {
     }
 
     async update(id: number, data: UpdateUserDTO) {
-        const user = await this._userRepository.findOne({ where: { id } });
-
-        if (!user) throw new NotFoundException("Usuário não encontrado.");
+        const user = await this.get(id);
 
         this._userRepository.merge(user, data);
+
         return await this._userRepository.save(user);
     }
 

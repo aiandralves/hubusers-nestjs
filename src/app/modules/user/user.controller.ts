@@ -11,14 +11,10 @@ import {
     Post,
     Put,
     Query,
-    Request,
-    UploadedFile,
     UseGuards,
     UseInterceptors,
 } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
-import { FileInterceptor } from "@nestjs/platform-express";
-import { StorageHelper } from "src/helpers/storage.helper";
 import { User } from "./user";
 import { CreateUserDTO, UpdateUserDTO } from "./user.dto";
 import { UserFilter } from "./user.filter";
@@ -46,15 +42,6 @@ export class UserController {
         return await this._userService.get(id);
     }
 
-    @Get(":id/image")
-    @UseInterceptors(ClassSerializerInterceptor)
-    @UseGuards(AuthGuard("jwt"))
-    async getImage(@Param("id") id: number) {
-        return await this._userService.getImage(id).catch((e) => {
-            throw new NotFoundException(e.message);
-        });
-    }
-
     @Post()
     async create(@Body() user: CreateUserDTO) {
         return this._userService.create(user).catch((e) => {
@@ -78,13 +65,5 @@ export class UserController {
         return this._userService.delete(id).catch((e) => {
             throw new NotFoundException(e.message);
         });
-    }
-
-    @UseGuards(AuthGuard("jwt"))
-    @Post("upload")
-    @UseInterceptors(FileInterceptor("file", StorageHelper))
-    uploadFile(@UploadedFile() file: Express.Multer.File, @Request() req: UserRequest) {
-        const user: UpdateUserDTO = req.user;
-        return this._userService.update(user.id, { avatar: file.filename });
     }
 }
