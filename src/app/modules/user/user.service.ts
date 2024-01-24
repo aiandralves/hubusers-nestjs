@@ -5,11 +5,12 @@ import { Filter } from "src/app/filters/filter.service";
 
 import { CloudinaryService } from "src/config/cloud/images/cloudinary.service";
 import { DataSource, FindOneOptions, Like, Repository } from "typeorm";
-import { v4 as uuid } from "uuid";
 import { ImageService } from "../image/image.service";
 import { User } from "./user";
 import { UserDTO } from "./user.dto";
 import { UserFilter } from "./user.filter";
+
+import { v4 as uuid } from "uuid";
 
 @Injectable()
 export class UserService {
@@ -62,19 +63,21 @@ export class UserService {
         const user = await this._userRepository.findOne({ where: { id }, relations: { image: true } });
         if (!user) throw new NotFoundException("Usuário não encontrado.");
 
-        data = await this._saveCloudinaryImage(data);
+        if (user.imageId === user.image.id) {
+            if (user.image.link && user.image.publicId) {
+                const image = await this._imageService.findOneOrFail(user.image.id);
+                const newImage = await this._cloudService.uploadImageDto(data.image, `/${user.name}`);
+                image.link = newImage.link;
+                image.publicId = newImage.publicId;
+                user.image.link = image.link;
+                user.image.publicId = image.publicId;
+                this._userRepository.merge(user, { ...data, image: null });
+            } else if (data.image.base64src) {
+                data = await this._saveCloudinaryImage(data);
+                this._userRepository.merge(user, data);
+            }
+        }
 
-        const userUpdate = {
-            name: data.name,
-            type: data.type,
-            stUser: data.stUser,
-            phone: data.phone,
-            image: data.image,
-            bio: data.bio,
-            dtBirthday: data.dtBirthday,
-        };
-
-        this._userRepository.merge(user, userUpdate);
         return await this._userRepository.save(user);
     }
 

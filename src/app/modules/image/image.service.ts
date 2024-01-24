@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectDataSource } from "@nestjs/typeorm";
 import { CloudinaryService } from "src/config/cloud/images/cloudinary.service";
 import { DataSource, Repository } from "typeorm";
@@ -13,6 +13,12 @@ export class ImageService {
         @InjectDataSource() private readonly _dataSource: DataSource,
         private _cloudService: CloudinaryService,
     ) {}
+
+    async findOneOrFail(id: number): Promise<Image> {
+        const image = await this._imageRepository.findOne({ where: { id } });
+        if (!image) throw new NotFoundException("Imagem não encontrada.");
+        return image;
+    }
 
     async save(image: ImageDTO) {
         return await this._imageRepository.save(this._imageRepository.create(image));
