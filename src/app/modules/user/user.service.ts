@@ -64,15 +64,17 @@ export class UserService {
         if (!user) throw new NotFoundException("Usuário não encontrado.");
 
         if (user.imageId === user.image.id) {
-            if (user.image.link && user.image.publicId) {
+            if (user.image.id && user.image.link && user.image.publicId) {
                 const image = await this._imageService.findOneOrFail(user.image.id);
                 const newImage = await this._cloudService.uploadImageDto(data.image, `/${user.name}`);
                 image.link = newImage.link;
                 image.publicId = newImage.publicId;
+                image.title = uuid().concat(`_${newImage.title}`);
                 user.image.link = image.link;
                 user.image.publicId = image.publicId;
+                user.image.title = image.title;
                 this._userRepository.merge(user, { ...data, image: null });
-            } else if (data.image.base64src) {
+            } else if (!user.image.id && data.image.base64src) {
                 data = await this._saveCloudinaryImage(data);
                 this._userRepository.merge(user, data);
             }

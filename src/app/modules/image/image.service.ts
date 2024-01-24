@@ -21,7 +21,7 @@ export class ImageService {
     }
 
     async save(image: ImageDTO) {
-        return await this._imageRepository.save(this._imageRepository.create(image));
+        return await this._imageRepository.save(image);
     }
 
     async deleteImage(image: ImageDTO) {
