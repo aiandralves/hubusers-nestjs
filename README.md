@@ -16,7 +16,9 @@ Por fim, a aplicação estará disponível em `http://localhost:3333`
 
 1. Criar uma conta no cloudinary [(https://console.cloudinary.com/)] é de forma gratuita
 
-2. Configurar as variavéis de ambiente do `.env`, é só selecionar o "Dashboard" no menu lateral;
+2. Configurar as variavéis de ambiente do `.env`
+
+3. Caso tenha dúvidas de como localizar as variavéis, basta acessar a plataforma do cloudinary e selecionar a opção de "Dashboard" no menu lateral, lá estará todos as opções de settings cloudinary do `.env`
 
 <div style="padding: .75rem 2rem 1rem;">
 <img src="./cloud.png" alt="" width="400" />

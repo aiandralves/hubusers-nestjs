@@ -17,13 +17,16 @@ export class AuthService {
             id: payload.sub,
             name: payload.name,
             email: payload.email,
+            link: payload.link,
         };
     }
 
     async validateUser(email: string, password: string): Promise<IJwtPaylod> {
         let user: User;
         try {
-            user = await this._userService.findOneOrFail({ where: { email } });
+            user = await this._userService.findOneOrFail({ where: { email }, relations: { image: true } });
+
+            console.log(user);
         } catch (e) {
             throw new BadRequestException(MessageHelper.passwdOrEmail);
         }
@@ -35,6 +38,7 @@ export class AuthService {
             sub: user.id,
             name: user.name,
             email: user.email,
+            link: user.image?.link,
         };
     }
 }
