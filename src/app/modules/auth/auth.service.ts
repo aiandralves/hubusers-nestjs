@@ -1,6 +1,7 @@
-import { Injectable } from "@nestjs/common";
+import { BadRequestException, Injectable } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { compareSync } from "bcrypt";
+import { MessageHelper } from "src/helpers/message.helper";
 import { User } from "../user/user";
 import { UserService } from "../user/user.service";
 import { AuthResponseDTO } from "./auth-response.dto";
@@ -24,11 +25,11 @@ export class AuthService {
         try {
             user = await this._userService.findOneOrFail({ where: { email } });
         } catch (e) {
-            return null;
+            throw new BadRequestException(MessageHelper.passwdOrEmail);
         }
 
         const isPasswdValid = compareSync(password, user.password);
-        if (!isPasswdValid) return null;
+        if (!isPasswdValid) throw new BadRequestException(MessageHelper.passwdOrEmail);
 
         return {
             sub: user.id,

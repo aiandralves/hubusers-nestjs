@@ -1,6 +1,7 @@
 import * as bcrypt from "bcrypt";
 import { Exclude } from "class-transformer";
-import { BeforeInsert, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { BeforeInsert, Column, CreateDateColumn, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Image } from "../image/image";
 
 @Entity({ name: "users" })
 export class User {
@@ -26,8 +27,9 @@ export class User {
     @Column({ nullable: true })
     phone?: string;
 
-    @Column({ nullable: true })
-    avatar?: string;
+    @OneToOne(() => Image, { nullable: true, onUpdate: "CASCADE" })
+    @JoinColumn()
+    image?: Image;
 
     @Column({ type: "text", nullable: true })
     bio?: string;

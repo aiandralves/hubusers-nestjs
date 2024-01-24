@@ -11,21 +11,13 @@ import {
     Post,
     Put,
     Query,
-    UploadedFile,
     UseGuards,
     UseInterceptors,
 } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
-import { FileInterceptor } from "@nestjs/platform-express";
-import { FileDTO } from "./dtos/file.dto";
-import { CreateUserDTO, UpdateUserDTO } from "./dtos/user.dto";
-import { User } from "./user";
+import { UserDTO } from "./user.dto";
 import { UserFilter } from "./user.filter";
 import { UserService } from "./user.service";
-
-interface UserRequest {
-    user: User;
-}
 
 @Controller("api/v1/users")
 export class UserController {
@@ -46,7 +38,7 @@ export class UserController {
     }
 
     @Post()
-    async create(@Body() user: CreateUserDTO) {
+    async create(@Body() user: UserDTO) {
         return this._userService.create(user).catch((e) => {
             throw new NotFoundException(e.message);
         });
@@ -55,10 +47,16 @@ export class UserController {
     @Put(":id")
     @UseInterceptors(ClassSerializerInterceptor)
     @UseGuards(AuthGuard("jwt"))
-    async update(@Param("id") id: number, @Body() user: UpdateUserDTO) {
-        return this._userService.update(id, user).catch((e) => {
-            throw new NotFoundException(e.message);
-        });
+    async update(@Param("id") id: number, @Body() user: UserDTO) {
+        return this._userService
+            .update(id, user)
+            .then((user) => {
+                console.log("User update", user);
+            })
+            .catch((e) => {
+                console.error(e);
+                throw new NotFoundException(e.message);
+            });
     }
 
     @Delete(":id")
@@ -68,13 +66,5 @@ export class UserController {
         return this._userService.delete(id).catch((e) => {
             throw new NotFoundException(e.message);
         });
-    }
-
-    @UseGuards(AuthGuard("jwt"))
-    @Post("upload")
-    @UseInterceptors(FileInterceptor("file"))
-    async uploadFile(@UploadedFile() file: FileDTO) {
-        console.log(file);
-        return await this._userService.uploadAvatar(file);
     }
 }

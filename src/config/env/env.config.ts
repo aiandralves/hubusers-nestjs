@@ -16,8 +16,11 @@ export default () => ({
             secret: process.env.JWT_SECRET_KEY,
         },
     },
-    supabase: {
-        key: process.env.SUPABASE_KEY,
-        url: process.env.SUPABASE_URL,
+    cloudinary: {
+        name: process.env.CLOUDINARY_NAME,
+        key: process.env.CLOUDINARY_KEY,
+        secret: process.env.CLOUDINARY_SECRET,
+        ev: process.env.CLOUDINARY_EV,
+        rootFolder: process.env.CLOUDINARY_ROOT_FOLDER,
     },
 });

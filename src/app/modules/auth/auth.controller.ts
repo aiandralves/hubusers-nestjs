@@ -1,4 +1,4 @@
-import { Controller, Post, Req, UseGuards } from "@nestjs/common";
+import { Controller, HttpCode, HttpStatus, Post, Req, UseGuards } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 import { AuthService } from "./auth.service";
 import { IJwtPaylod } from "./interfaces/jwt-payload.interface";
@@ -13,6 +13,7 @@ export class AuthController {
 
     @UseGuards(AuthGuard("local"))
     @Post("login")
+    @HttpCode(HttpStatus.OK)
     async login(@Req() req: AuthRequest) {
         return await this._authService.login(req.user);
     }

@@ -1,4 +1,5 @@
 import * as dotenv from "dotenv";
+import { Image } from "src/app/modules/image/image";
 import { User } from "src/app/modules/user/user";
 import { DataSource } from "typeorm";
 import envConfig from "../env/env.config";
@@ -11,7 +12,7 @@ const MysqlDataSource = new DataSource({
     username: envConfig().database.user,
     password: envConfig().database.password,
     database: envConfig().database.schema,
-    entities: [User],
+    entities: [User, Image],
     synchronize: true,
 });
 

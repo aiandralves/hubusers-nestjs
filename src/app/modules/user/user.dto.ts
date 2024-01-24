@@ -1,32 +1,22 @@
 import { IsEmail, IsNotEmpty, IsOptional, Matches } from "class-validator";
 import { MessageHelper } from "src/helpers/message.helper";
 import { RegexHelper } from "src/helpers/regex.helper";
+import { ImageDTO } from "../image/image.dto";
 
-export class CreateUserDTO {
-    @IsNotEmpty()
-    name: string;
-
-    @IsNotEmpty()
-    @IsEmail()
-    email: string;
-
-    @IsOptional()
-    phone?: string;
-
-    @IsOptional()
-    avatar?: string;
-
-    @IsNotEmpty()
-    @Matches(RegexHelper.password, { message: MessageHelper.passwdValid })
-    password: string;
-}
-
-export class UpdateUserDTO {
+export class UserDTO {
     @IsOptional()
     id?: number;
 
     @IsNotEmpty()
     name?: string;
+
+    @IsOptional()
+    @IsEmail()
+    email?: string;
+
+    @IsOptional()
+    @Matches(RegexHelper.password, { message: MessageHelper.passwdValid })
+    password?: string;
 
     @IsOptional()
     type?: number;
@@ -38,11 +28,14 @@ export class UpdateUserDTO {
     phone?: string;
 
     @IsOptional()
-    avatar?: string;
+    image?: ImageDTO;
 
     @IsOptional()
     bio?: string;
 
     @IsOptional()
     dtBirthday?: Date;
+
+    @IsOptional()
+    created?: Date;
 }
