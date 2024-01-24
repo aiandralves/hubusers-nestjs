@@ -31,7 +31,6 @@ export class UserController {
     }
 
     @Get(":id")
-    @UseInterceptors(ClassSerializerInterceptor)
     @UseGuards(AuthGuard("jwt"))
     async get(@Param("id") id: number) {
         return await this._userService.get(id);
@@ -48,15 +47,9 @@ export class UserController {
     @UseInterceptors(ClassSerializerInterceptor)
     @UseGuards(AuthGuard("jwt"))
     async update(@Param("id") id: number, @Body() user: UserDTO) {
-        return this._userService
-            .update(id, user)
-            .then((user) => {
-                console.log("User update", user);
-            })
-            .catch((e) => {
-                console.error(e);
-                throw new NotFoundException(e.message);
-            });
+        return this._userService.update(id, user).catch((e) => {
+            throw new NotFoundException(e.message);
+        });
     }
 
     @Delete(":id")

@@ -27,8 +27,11 @@ export class User {
     @Column({ nullable: true })
     phone?: string;
 
-    @OneToOne(() => Image, { nullable: true, onUpdate: "CASCADE" })
-    @JoinColumn()
+    @Column({ nullable: true })
+    imageId?: number;
+
+    @OneToOne(() => Image, (image: Image) => image.user, { cascade: true, onUpdate: "CASCADE", onDelete: "CASCADE" })
+    @JoinColumn({ name: "imageId", referencedColumnName: "id" })
     image?: Image;
 
     @Column({ type: "text", nullable: true })

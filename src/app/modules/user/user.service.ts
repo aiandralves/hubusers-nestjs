@@ -33,7 +33,7 @@ export class UserService {
             }
         }
 
-        return await this._userRepository.find({ where: search, relations: ["image"] });
+        return await this._userRepository.find({ where: search, relations: { image: true } });
     }
 
     async findOneOrFail(options?: FindOneOptions<User>) {
@@ -45,7 +45,7 @@ export class UserService {
     }
 
     async get(id: number): Promise<User> {
-        const user = await this._userRepository.findOne({ where: { id } });
+        const user = await this._userRepository.findOne({ where: { id }, relations: { image: true } });
         if (!user) throw new NotFoundException("Usuário não encontrado.");
         return user;
     }
@@ -58,9 +58,23 @@ export class UserService {
         return await this._userRepository.save(this._userRepository.create(user));
     }
 
-    async update(id: number, user: UserDTO) {
-        await this.get(id);
-        user = await this._saveCloudinaryImage(user);
+    async update(id: number, data: UserDTO) {
+        const user = await this._userRepository.findOne({ where: { id }, relations: { image: true } });
+        if (!user) throw new NotFoundException("Usuário não encontrado.");
+
+        data = await this._saveCloudinaryImage(data);
+
+        const userUpdate = {
+            name: data.name,
+            type: data.type,
+            stUser: data.stUser,
+            phone: data.phone,
+            image: data.image,
+            bio: data.bio,
+            dtBirthday: data.dtBirthday,
+        };
+
+        this._userRepository.merge(user, userUpdate);
         return await this._userRepository.save(user);
     }
 
@@ -72,10 +86,8 @@ export class UserService {
     }
 
     private async _saveCloudinaryImage(user: UserDTO) {
-        console.log(user);
         if (user.image.base64src) {
             user.image.title = uuid().concat(`_${user.image.title}`);
-            console.log(user.image.title);
             user.image = await this._cloudService.uploadImageDto(user.image, `/${user.name}`);
             await this._imageService.save(user.image);
         }
