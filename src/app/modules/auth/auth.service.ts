@@ -1,7 +1,8 @@
-import { BadRequestException, Injectable } from "@nestjs/common";
+import { BadRequestException, Injectable, Logger } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { compareSync } from "bcrypt";
 import { MessageHelper } from "src/helpers/message.helper";
+import { SectorService } from "../sector/sector.service";
 import { User } from "../user/user";
 import { UserService } from "../user/user.service";
 import { AuthResponseDTO } from "./auth-response.dto";
@@ -9,7 +10,15 @@ import { IJwtPaylod } from "./interfaces/jwt-payload.interface";
 
 @Injectable()
 export class AuthService {
-    constructor(private _userService: UserService, private _jwtService: JwtService) {}
+    private readonly _logger = new Logger(AuthService.name);
+
+    constructor(
+        private _userService: UserService,
+        private _jwtService: JwtService,
+        private _sectorService: SectorService,
+    ) {
+        this.createDefaultSector();
+    }
 
     async login(payload: IJwtPaylod): Promise<AuthResponseDTO> {
         return {
@@ -21,12 +30,23 @@ export class AuthService {
         };
     }
 
+    async createDefaultSector() {
+        this._logger.log("Create default sector");
+
+        const sectors = await this._sectorService.find();
+        this._logger.log(`Sectors: ${sectors.length}`);
+
+        if (sectors.length <= 0) {
+            await this._sectorService.create({
+                name: "Desenvolvimento",
+            });
+        }
+    }
+
     async validateUser(email: string, password: string): Promise<IJwtPaylod> {
         let user: User;
         try {
             user = await this._userService.findOneOrFail({ where: { email }, relations: { image: true } });
-
-            console.log(user);
         } catch (e) {
             throw new BadRequestException(MessageHelper.passwdOrEmail);
         }
