@@ -2,6 +2,7 @@ import { IsEmail, IsNotEmpty, IsOptional, Matches } from "class-validator";
 import { MessageHelper } from "src/helpers/message.helper";
 import { RegexHelper } from "src/helpers/regex.helper";
 import { ImageDTO } from "../image/image.dto";
+import { SectorDTO } from "../sector/sector.dto";
 
 export class UserDTO {
     @IsOptional()
@@ -19,9 +20,6 @@ export class UserDTO {
     password?: string;
 
     @IsOptional()
-    type?: number;
-
-    @IsOptional()
     stUser?: boolean;
 
     @IsOptional()
@@ -31,10 +29,22 @@ export class UserDTO {
     image?: ImageDTO;
 
     @IsOptional()
+    sector?: SectorDTO;
+
+    @IsOptional()
     bio?: string;
 
     @IsOptional()
+    sectorId?: number;
+
+    @IsOptional()
+    gnUser?: number;
+
+    @IsOptional()
     dtBirthday?: Date;
+
+    @IsOptional()
+    dtHiring?: Date;
 
     @IsOptional()
     created?: Date;

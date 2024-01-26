@@ -33,7 +33,9 @@ export class UserController {
     @Get(":id")
     @UseGuards(AuthGuard("jwt"))
     async get(@Param("id") id: number) {
-        return await this._userService.get(id);
+        return await this._userService.get(id).catch((e) => {
+            throw new NotFoundException(e.message);
+        });
     }
 
     @Post()

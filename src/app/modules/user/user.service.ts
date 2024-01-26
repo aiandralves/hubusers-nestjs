@@ -34,7 +34,7 @@ export class UserService {
             }
         }
 
-        return await this._userRepository.find({ where: search, relations: { image: true } });
+        return await this._userRepository.find({ where: search, relations: { image: true, sector: true } });
     }
 
     async findOneOrFail(options?: FindOneOptions<User>) {
@@ -46,7 +46,7 @@ export class UserService {
     }
 
     async get(id: number): Promise<User> {
-        const user = await this._userRepository.findOne({ where: { id }, relations: { image: true } });
+        const user = await this._userRepository.findOne({ where: { id }, relations: { image: true, sector: true } });
         if (!user) throw new NotFoundException("Usuário não encontrado.");
         return user;
     }
@@ -60,7 +60,7 @@ export class UserService {
     }
 
     async update(id: number, data: UserDTO) {
-        const user = await this._userRepository.findOne({ where: { id }, relations: { image: true } });
+        const user = await this._userRepository.findOne({ where: { id }, relations: { image: true, sector: true } });
         if (!user) throw new NotFoundException("Usuário não encontrado.");
 
         if (user.imageId === user.image.id) {

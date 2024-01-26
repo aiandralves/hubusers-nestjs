@@ -1,7 +1,17 @@
 import * as bcrypt from "bcrypt";
 import { Exclude } from "class-transformer";
-import { BeforeInsert, Column, CreateDateColumn, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import {
+    BeforeInsert,
+    Column,
+    CreateDateColumn,
+    Entity,
+    JoinColumn,
+    ManyToOne,
+    OneToOne,
+    PrimaryGeneratedColumn,
+} from "typeorm";
 import { Image } from "../image/image";
+import { Sector } from "../sector/sector";
 
 @Entity({ name: "users" })
 export class User {
@@ -18,9 +28,6 @@ export class User {
     @Exclude()
     password: string;
 
-    @Column({ nullable: true })
-    type?: number;
-
     @Column({ default: true, nullable: true })
     stUser: boolean;
 
@@ -34,11 +41,24 @@ export class User {
     @JoinColumn({ name: "imageId", referencedColumnName: "id" })
     image?: Image;
 
+    @Column({ nullable: true })
+    sectorId?: number;
+
+    @Column({ nullable: true })
+    gnUser?: number;
+
+    @ManyToOne(() => Sector, (sector: Sector) => sector.users, { nullable: true })
+    @JoinColumn({ name: "sectorId", referencedColumnName: "id" })
+    sector?: Sector;
+
     @Column({ type: "text", nullable: true })
     bio?: string;
 
     @Column({ type: "date", nullable: true })
     dtBirthday?: Date;
+
+    @Column({ type: "datetime", nullable: true })
+    dtHiring?: Date;
 
     @CreateDateColumn()
     created?: Date;
