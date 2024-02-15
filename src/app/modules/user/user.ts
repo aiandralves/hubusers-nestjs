@@ -28,6 +28,10 @@ export class User {
     @Exclude()
     password: string;
 
+    @Column({ nullable: true })
+    @Exclude()
+    confirmPassword?: string;
+
     @Column({ default: true, nullable: true })
     stUser: boolean;
 
@@ -55,10 +59,10 @@ export class User {
     bio?: string;
 
     @Column({ type: "date", nullable: true })
-    dtBirthday?: Date;
+    dtBirthday?: string;
 
     @Column({ type: "datetime", nullable: true })
-    dtHiring?: Date;
+    dtHiring?: string;
 
     @CreateDateColumn()
     created?: Date;

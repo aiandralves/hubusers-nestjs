@@ -63,6 +63,15 @@ export class UserService {
         const user = await this._userRepository.findOne({ where: { id }, relations: { image: true, sector: true } });
         if (!user) throw new NotFoundException("Usuário não encontrado.");
 
+        user.name = data.name;
+        user.sectorId = data.sector.id;
+        user.phone = data.phone;
+        user.dtHiring = data.dtHiring;
+        user.dtBirthday = data.dtBirthday;
+        user.bio = data.bio;
+        user.gnUser = data.gnUser;
+        user.stUser = data.stUser;
+
         if (user.imageId === user.image.id) {
             if (user.image.id && user.image.link && user.image.publicId) {
                 const image = await this._imageService.findOneOrFail(user.image.id);

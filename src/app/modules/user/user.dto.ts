@@ -20,6 +20,10 @@ export class UserDTO {
     password?: string;
 
     @IsOptional()
+    @Matches(RegexHelper.password, { message: MessageHelper.passwdValid })
+    confirmPassword?: string;
+
+    @IsOptional()
     stUser?: boolean;
 
     @IsOptional()
@@ -35,16 +39,13 @@ export class UserDTO {
     bio?: string;
 
     @IsOptional()
-    sectorId?: number;
-
-    @IsOptional()
     gnUser?: number;
 
     @IsOptional()
-    dtBirthday?: Date;
+    dtBirthday?: string;
 
     @IsOptional()
-    dtHiring?: Date;
+    dtHiring?: string;
 
     @IsOptional()
     created?: Date;
