@@ -99,6 +99,10 @@ export class UserService {
         await this._imageService.deleteImage(user.image);
     }
 
+    async updateRefreshTokenId(id: number, refreshTokenId: string) {
+        return await this._userRepository.update(id, { refreshTokenId });
+    }
+
     private async _saveCloudinaryImage(user: UserDTO) {
         if (user.image.base64src) {
             user.image.title = uuid().concat(`_${user.image.title}`);

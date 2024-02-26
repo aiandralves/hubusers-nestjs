@@ -67,6 +67,9 @@ export class User {
     @CreateDateColumn()
     created?: Date;
 
+    @Column({ nullable: true })
+    refreshTokenId?: string;
+
     @BeforeInsert()
     passwordEncrypt() {
         this.password = bcrypt.hashSync(this.password, 10);

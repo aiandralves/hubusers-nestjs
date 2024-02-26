@@ -4,4 +4,5 @@ export class AuthResponseDTO {
     email: string;
     token: string;
     link: string;
+    refreshToken?: string;
 }

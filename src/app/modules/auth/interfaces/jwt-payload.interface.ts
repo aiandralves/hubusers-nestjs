@@ -1,5 +1,5 @@
 export interface IJwtPaylod {
-    sub: number;
+    sub?: number;
     name: string;
     email: string;
     link: string;
