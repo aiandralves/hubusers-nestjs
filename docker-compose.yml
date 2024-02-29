@@ -1,0 +1,10 @@
+version: '3'
+services:
+    api-solid-pg:
+        image: mysql:latest
+        ports:
+            - 3306:3306 
+        environment:
+            - POSTGRESQL_USERNAME=root
+            - POSTGRESQL_PASSWORD=123456789
+            - POSTGRESQL_DATABASE=hubusers

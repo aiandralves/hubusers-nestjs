@@ -73,6 +73,10 @@ export class AuthService {
         return {
             token: this._generateToken(jwtPayload),
             refreshToken: this._generateRefreshToken(user.id),
+            id: jwtPayload.sub,
+            name: jwtPayload.name,
+            email: jwtPayload.email,
+            link: jwtPayload.link,
         };
     }
 
