@@ -1,8 +1,6 @@
 import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import { InjectDataSource } from "@nestjs/typeorm";
-
 import { Filter } from "src/app/filters/filter.service";
-
 import { CloudinaryService } from "src/config/cloud/images/cloudinary.service";
 import { DataSource, FindOneOptions, Like, Repository } from "typeorm";
 import { ImageService } from "../image/image.service";
@@ -59,37 +57,12 @@ export class UserService {
         return await this._userRepository.save(this._userRepository.create(user));
     }
 
-    async update(id: number, data: UserDTO) {
+    async save(id: number, userDto: UserDTO) {
         const user = await this._userRepository.findOne({ where: { id }, relations: { image: true, sector: true } });
         if (!user) throw new NotFoundException("Usuário não encontrado.");
 
-        user.name = data.name;
-        user.sectorId = data.sector.id;
-        user.phone = data.phone;
-        user.dtHiring = data.dtHiring;
-        user.dtBirthday = data.dtBirthday;
-        user.bio = data.bio;
-        user.gnUser = data.gnUser;
-        user.stUser = data.stUser;
-
-        if (user.imageId === user.image.id) {
-            if (user.image.id && user.image.link && user.image.publicId) {
-                const image = await this._imageService.findOneOrFail(user.image.id);
-                const newImage = await this._cloudService.uploadImageDto(data.image, `/${user.name}`);
-                image.link = newImage.link;
-                image.publicId = newImage.publicId;
-                image.title = uuid().concat(`_${newImage.title}`);
-                user.image.link = image.link;
-                user.image.publicId = image.publicId;
-                user.image.title = image.title;
-                this._userRepository.merge(user, { ...data, image: null });
-            } else if (!user.image.id && data.image.base64src) {
-                data = await this._saveCloudinaryImage(data);
-                this._userRepository.merge(user, data);
-            }
-        }
-
-        return await this._userRepository.save(user);
+        userDto = await this._saveCloudinaryImage(userDto);
+        return await this._userRepository.save(userDto);
     }
 
     async delete(id: number) {
@@ -107,7 +80,8 @@ export class UserService {
         if (user.image.base64src) {
             user.image.title = uuid().concat(`_${user.image.title}`);
             user.image = await this._cloudService.uploadImageDto(user.image, `/${user.name}`);
-            await this._imageService.save(user.image);
+            //user.image = await this._imageService.save(user.image);
+            return user;
         }
         return user;
     }

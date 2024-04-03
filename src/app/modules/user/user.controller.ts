@@ -49,7 +49,7 @@ export class UserController {
     @UseInterceptors(ClassSerializerInterceptor)
     @UseGuards(AuthGuard("jwt"))
     async update(@Param("id") id: number, @Body() user: UserDTO) {
-        return this._userService.update(id, user).catch((e) => {
+        return this._userService.save(id, user).catch((e) => {
             throw new NotFoundException(e.message);
         });
     }
