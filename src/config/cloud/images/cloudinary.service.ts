@@ -13,7 +13,7 @@ export class CloudinaryService {
         transformation?: TransformationOptions,
     ): Promise<ImageDTO> {
         try {
-            cloudinary.config(this.initCloudinaryCredentials());
+            cloudinary.config(this._initCloudinaryCredentials());
 
             const uploadResponse: UploadApiResponse = await cloudinary.uploader.upload(image.base64src, {
                 folder: envConfig().cloudinary.rootFolder.concat(path.trim()) || envConfig().cloudinary.rootFolder,
@@ -37,7 +37,7 @@ export class CloudinaryService {
 
     public async deleteCloudinaryImage(image: ImageDTO) {
         try {
-            cloudinary.config(this.initCloudinaryCredentials());
+            cloudinary.config(this._initCloudinaryCredentials());
 
             const deleteResponse = await cloudinary.uploader.destroy(image.publicId);
             return deleteResponse;
@@ -47,7 +47,7 @@ export class CloudinaryService {
         }
     }
 
-    private initCloudinaryCredentials() {
+    private _initCloudinaryCredentials() {
         return {
             cloud_name: envConfig().cloudinary.name,
             api_key: envConfig().cloudinary.key,

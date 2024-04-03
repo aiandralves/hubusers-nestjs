@@ -80,8 +80,7 @@ export class UserService {
         if (user.image.base64src) {
             user.image.title = uuid().concat(`_${user.image.title}`);
             user.image = await this._cloudService.uploadImageDto(user.image, `/${user.name}`);
-            //user.image = await this._imageService.save(user.image);
-            return user;
+            await this._imageService.save(user.image);
         }
         return user;
     }

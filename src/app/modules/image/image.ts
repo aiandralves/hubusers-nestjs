@@ -1,5 +1,4 @@
-import { Column, CreateDateColumn, Entity, OneToOne, PrimaryGeneratedColumn } from "typeorm";
-import { User } from "../user/user";
+import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity({ name: "images" })
 export class Image {
@@ -14,9 +13,6 @@ export class Image {
 
     @Column({ nullable: true })
     publicId?: string;
-
-    @OneToOne(() => User, (user: User) => user.image)
-    user: User;
 
     @CreateDateColumn()
     created: Date;

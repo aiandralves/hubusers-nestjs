@@ -34,4 +34,12 @@ export class ImageService {
             console.error(error);
         }
     }
+
+    async deleteCloudinaryImage(image: ImageDTO) {
+        try {
+            await this._cloudService.deleteCloudinaryImage(image);
+        } catch (error) {
+            console.error(error);
+        }
+    }
 }
